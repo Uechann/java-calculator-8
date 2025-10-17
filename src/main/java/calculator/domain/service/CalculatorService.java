@@ -4,6 +4,7 @@ import calculator.domain.entity.Delimeter;
 import calculator.domain.entity.Number;
 import calculator.domain.entity.DelimeterMode;
 
+import java.util.regex.Pattern;
 
 public class CalculatorService {
 
@@ -24,6 +25,33 @@ public class CalculatorService {
         }
 
         return calculateSum(number);
+    }
+
+    // 커스텀 구분자로 숫자 추출
+    public Number extractNumbersWithCustomDelimiter(String input) {
+
+        int newLineIndex = input.indexOf("\\n");
+        String customDelimiter = input.substring(2, newLineIndex);
+
+        // 커스텀 구분자 객체 생성 및 모드 설정
+        Delimeter delimeter = new Delimeter(customDelimiter);
+        delimeter.setDelimeterMode(DelimeterMode.CUSTOM);
+
+        input = input.substring(newLineIndex + 2);
+        Number number = new Number();
+
+        if (isValid(input, delimeter)) {
+            String[] stringParts = input.split(Pattern.quote(customDelimiter));
+
+            if (stringParts[0].isEmpty()) {
+                return number; // 빈 문자열인 경우 빈 Number 객체 반환
+            }
+
+            extracted(stringParts, number);
+            return number;
+        } else {
+            throw new IllegalArgumentException("입력 포맷이 맞지 않습니다.");
+        }
     }
 
     // 기본 구분자(쉼표, 콜론)로 숫자 추출
