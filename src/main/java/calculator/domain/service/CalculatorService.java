@@ -25,4 +25,37 @@ public class CalculatorService {
 
         return calculateSum(number);
     }
+
+    // 기본 구분자(쉼표, 콜론)로 숫자 추출
+    public Number extractNumbersWithDefaultDelimiter(String input) {
+
+        Delimeter delimeter = new Delimeter(",", ":");
+        delimeter.setDelimeterMode(DelimeterMode.DEFAULT);
+        Number number = new Number();
+
+        if (isValid(input, delimeter)) {
+            String[] stringParts = input.split(",|:");
+
+            if (stringParts[0].isEmpty()) {
+                return number; // 빈 문자열인 경우 빈 Number 객체 반환
+            }
+
+            extracted(stringParts, number);
+            return number;
+        } else {
+            throw new IllegalArgumentException("입력 포맷이 맞지 않습니다.");
+        }
+    }
+
+    //
+    private static void extracted(String[] stringParts, Number number) {
+        for (String part : stringParts) {
+            number.addNumber(Integer.parseInt(part));
+        }
+    }
+
+    // 검증 로직
+    boolean isValid(String input, Delimeter delimeter) {
+        return regularExpressionService.validateRegex(input, delimeter);
+    }
 }
