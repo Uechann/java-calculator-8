@@ -8,6 +8,12 @@ import java.util.regex.Pattern;
 
 public class CalculatorService {
 
+    private final RegularExpressionService regularExpressionService;
+
+    public CalculatorService() {
+        this.regularExpressionService = new RegularExpressionService();
+    }
+
     // 문자열에서 구분자 기준으로 숫자 추출 및 합산
     public int start(String input) {
         Number number;
