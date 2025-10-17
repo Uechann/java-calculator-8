@@ -82,6 +82,15 @@ public class CalculatorService {
         }
     }
 
+    // 숫자 더하기
+    public int calculateSum(Number number) {
+        int sum = 0;
+        for (int num : number.getNumbers()) {
+            sum += num;
+        }
+        return sum;
+    }
+
     // 검증 로직
     boolean isValid(String input, Delimeter delimeter) {
         return regularExpressionService.validateRegex(input, delimeter);
