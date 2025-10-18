@@ -11,7 +11,7 @@ public class RegularExpressionService {
         String joinedDelimiters = buildRegexFromDelimiters(delimeter);
         String regex = "^(?:\\d+(?:" + "(" + joinedDelimiters + ")" + "\\d+)*)?$";
 
-        if(input.matches(regex)) {
+        if(!input.matches(regex)) {
             throw new IllegalArgumentException("입력 형식 오류입니다.");
         }
     }

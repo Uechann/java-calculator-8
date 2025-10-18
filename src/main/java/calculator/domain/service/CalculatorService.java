@@ -5,6 +5,7 @@ import calculator.domain.entity.Number;
 import calculator.domain.entity.DelimeterMode;
 
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CalculatorService {
 
@@ -33,11 +34,20 @@ public class CalculatorService {
             number = extractNumbersWithCustomDelimeter(input, number);
 
         } else { // 기본 구분자 모드
+
+            // 기본 구분자(쉼표, 콜론) 설정
+            Delimeter delimeter = new Delimeter(",", ":");
+            delimeter.setDelimeterMode(DelimeterMode.DEFAULT);
+
             // 입력값 검증
-            isValid(input, new Delimeter(",", ":"));
+            isValid(input, delimeter);
+
+            number = new Number();
+            number.setDelimeter(delimeter);
 
             // 숫자들 추출
-            number = extractNumbersWithDefaultDelimeter(input);
+            number = extractNumbersWithDefaultDelimeter(input, number);
+
         }
 
         return calculateSum(number);
@@ -55,7 +65,7 @@ public class CalculatorService {
     }
 
     // 커스텀 구분자로 숫자 추출
-    public Number extractNumbersWithCustomDelimeter(String input, Number number) {
+    private Number extractNumbersWithCustomDelimeter(String input, Number number) {
 
         String[] stringParts = input.split(Pattern.quote(number.getDelimeter().getValue().get(0)));
 
@@ -68,15 +78,13 @@ public class CalculatorService {
     }
 
     // 기본 구분자(쉼표, 콜론)로 숫자 추출
-    public Number extractNumbersWithDefaultDelimeter(String input) {
+    private Number extractNumbersWithDefaultDelimeter(String input, Number number) {
 
-        Delimeter delimeter = new Delimeter(",", ":");
-        delimeter.setDelimeterMode(DelimeterMode.DEFAULT);
+        String delimeterString = number.getDelimeter().getValue().stream()
+                .map(Pattern::quote)
+                .collect(Collectors.joining("|"));
 
-        Number number = new Number();
-        number.setDelimeter(delimeter);
-
-        String[] stringParts = input.split(",|:");
+        String[] stringParts = input.split(delimeterString);
 
         if (stringParts[0].isEmpty()) {
             return number; // 빈 문자열인 경우 빈 Number 객체 반환
@@ -95,7 +103,7 @@ public class CalculatorService {
     }
 
     // 숫자 더하기
-    public int calculateSum(Number number) {
+    private int calculateSum(Number number) {
         int sum = 0;
         for (int num : number.getNumbers()) {
             sum += num;
