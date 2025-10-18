@@ -73,7 +73,7 @@ public class CalculatorService {
             return number; // 빈 문자열인 경우 빈 Number 객체 반환
         }
 
-        extracted(stringParts, number);
+        extractStringsToNumbers(stringParts, number);
         return number;
     }
 
