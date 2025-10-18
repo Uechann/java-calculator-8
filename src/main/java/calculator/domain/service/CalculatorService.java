@@ -25,8 +25,14 @@ public class CalculatorService {
             number = extractNumbersWithCustomDelimiter(input);
         } else {
             // 기본 구분자 모드
-            Delimeter delimeter = new Delimeter();
-            delimeter.setDelimeterMode(DelimeterMode.DEFAULT);
+            // 입력값 검증
+            boolean isValidDefault = regularExpressionService.validateRegex(input, new Delimeter(",", ":"));
+
+            if (!isValidDefault) {
+                throw new IllegalArgumentException("입력 포맷이 맞지 않습니다.");
+            }
+
+            // 숫자들 추출
             number = extractNumbersWithDefaultDelimiter(input);
         }
 
@@ -43,8 +49,10 @@ public class CalculatorService {
         Delimeter delimeter = new Delimeter(customDelimiter);
         delimeter.setDelimeterMode(DelimeterMode.CUSTOM);
 
-        input = input.substring(newLineIndex + 2);
         Number number = new Number();
+        number.setDelimeter(delimeter);
+
+        input = input.substring(newLineIndex + 2);
 
         if (isValid(input, delimeter)) {
             String[] stringParts = input.split(Pattern.quote(customDelimiter));
@@ -65,23 +73,22 @@ public class CalculatorService {
 
         Delimeter delimeter = new Delimeter(",", ":");
         delimeter.setDelimeterMode(DelimeterMode.DEFAULT);
+
         Number number = new Number();
+        number.setDelimeter(delimeter);
 
-        if (isValid(input, delimeter)) {
-            String[] stringParts = input.split(",|:");
+        String[] stringParts = input.split(",|:");
 
-            if (stringParts[0].isEmpty()) {
-                return number; // 빈 문자열인 경우 빈 Number 객체 반환
-            }
-
-            extracted(stringParts, number);
-            return number;
-        } else {
-            throw new IllegalArgumentException("입력 포맷이 맞지 않습니다.");
+        if (stringParts[0].isEmpty()) {
+            return number; // 빈 문자열인 경우 빈 Number 객체 반환
         }
+
+        // 숫자들 추출
+        extracted(stringParts, number);
+        return number;
     }
 
-    //
+    // 숫자들 추출 공통 로직
     private static void extracted(String[] stringParts, Number number) {
         for (String part : stringParts) {
             number.addNumber(Integer.parseInt(part));
