@@ -65,7 +65,7 @@ public class CalculatorService {
     // 커스텀 구분자로 숫자 추출
     public Number extractNumbersWithCustomDelimeter(String input, Number number) {
 
-        String[] stringParts = input.split(Pattern.quote(number.getDelimeter().getDelimeter().get(0)));
+        String[] stringParts = input.split(Pattern.quote(number.getDelimeter().getValue().get(0)));
 
         if (stringParts[0].isEmpty()) {
             return number; // 빈 문자열인 경우 빈 Number 객체 반환

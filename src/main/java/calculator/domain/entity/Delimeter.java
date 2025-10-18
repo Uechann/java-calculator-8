@@ -3,22 +3,22 @@ package calculator.domain.entity;
 import java.util.List;
 
 public class Delimeter {
-    private List<String> delimeter;
-    private DelimeterMode delimeterMode;
+    private List<String> value;
+    private DelimeterMode mode;
 
     public Delimeter() {}
 
     public Delimeter(String... delimeter) {
-        this.delimeter = List.of(delimeter);
+        this.value = List.of(delimeter);
     }
 
     // 구분자 배열 반환
-    public List<String> getDelimeter() {
-        return delimeter;
+    public List<String> getValue() {
+        return value;
     }
 
     // 구분자 모드 설정
     public void setDelimeterMode(DelimeterMode delimeterMode) {
-        this.delimeterMode = delimeterMode;
+        this.mode = delimeterMode;
     }
 }
