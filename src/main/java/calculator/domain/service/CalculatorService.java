@@ -18,13 +18,24 @@ public class CalculatorService {
     public int start(String input) {
         Number number;
         // 커스텀 구분자 모드인지 확인
-        if (input.startsWith("//") && input.contains("\\n")) {
-            // 커스텀 구분자 모드
-            Delimeter delimeter = new Delimeter();
-            delimeter.setDelimeterMode(DelimeterMode.CUSTOM);
-            number = extractNumbersWithCustomDelimiter(input);
-        } else {
-            // 기본 구분자 모드
+        if (input.startsWith("//") && input.contains("\\n")) { // 커스텀 구분자 모드
+
+            // 구분자 추출
+            Delimeter delimeter = extractCustomDelimeter(input);
+
+            // 입력값 검증
+            input = input.substring(input.indexOf("\\n") + 2);
+            boolean isValidCustom = regularExpressionService.validateRegex(input, delimeter);
+
+            if (!isValidCustom) {
+                throw new IllegalArgumentException("입력 포맷이 맞지 않습니다.");
+            }
+
+            number = new Number();
+            number.setDelimeter(delimeter);
+            // 숫자들 추출
+            number = extractNumbersWithCustomDelimeter(input, number);
+        } else { // 기본 구분자 모드
             // 입력값 검증
             boolean isValidDefault = regularExpressionService.validateRegex(input, new Delimeter(",", ":"));
 
@@ -33,43 +44,27 @@ public class CalculatorService {
             }
 
             // 숫자들 추출
-            number = extractNumbersWithDefaultDelimiter(input);
+            number = extractNumbersWithDefaultDelimeter(input);
         }
 
         return calculateSum(number);
     }
 
     // 커스텀 구분자로 숫자 추출
-    public Number extractNumbersWithCustomDelimiter(String input) {
+    public Number extractNumbersWithCustomDelimeter(String input, Number number) {
 
-        int newLineIndex = input.indexOf("\\n");
-        String customDelimiter = input.substring(2, newLineIndex);
+        String[] stringParts = input.split(Pattern.quote(number.getDelimeter().getDelimeter().get(0)));
 
-        // 커스텀 구분자 객체 생성 및 모드 설정
-        Delimeter delimeter = new Delimeter(customDelimiter);
-        delimeter.setDelimeterMode(DelimeterMode.CUSTOM);
-
-        Number number = new Number();
-        number.setDelimeter(delimeter);
-
-        input = input.substring(newLineIndex + 2);
-
-        if (isValid(input, delimeter)) {
-            String[] stringParts = input.split(Pattern.quote(customDelimiter));
-
-            if (stringParts[0].isEmpty()) {
-                return number; // 빈 문자열인 경우 빈 Number 객체 반환
-            }
-
-            extracted(stringParts, number);
-            return number;
-        } else {
-            throw new IllegalArgumentException("입력 포맷이 맞지 않습니다.");
+        if (stringParts[0].isEmpty()) {
+            return number; // 빈 문자열인 경우 빈 Number 객체 반환
         }
+
+        extracted(stringParts, number);
+        return number;
     }
 
     // 기본 구분자(쉼표, 콜론)로 숫자 추출
-    public Number extractNumbersWithDefaultDelimiter(String input) {
+    public Number extractNumbersWithDefaultDelimeter(String input) {
 
         Delimeter delimeter = new Delimeter(",", ":");
         delimeter.setDelimeterMode(DelimeterMode.DEFAULT);

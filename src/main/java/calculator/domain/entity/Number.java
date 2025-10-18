@@ -25,4 +25,8 @@ public class Number {
     public void addNumber(int number) {
         this.numbers.add(number);
     }
+
+    public Delimeter getDelimeter() {
+        return delimeter;
+    }
 }
