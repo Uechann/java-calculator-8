@@ -25,7 +25,7 @@ public class CalculatorService {
 
             // 입력값 검증
             input = input.substring(input.indexOf("\\n") + 2);
-            boolean isValidCustom = regularExpressionService.validateRegex(input, delimeter);
+            boolean isValidCustom = isValid(input, delimeter);
 
             if (!isValidCustom) {
                 throw new IllegalArgumentException("입력 포맷이 맞지 않습니다.");
@@ -35,9 +35,10 @@ public class CalculatorService {
             number.setDelimeter(delimeter);
             // 숫자들 추출
             number = extractNumbersWithCustomDelimeter(input, number);
+
         } else { // 기본 구분자 모드
             // 입력값 검증
-            boolean isValidDefault = regularExpressionService.validateRegex(input, new Delimeter(",", ":"));
+            boolean isValidDefault = isValid(input, new Delimeter(",", ":"));
 
             if (!isValidDefault) {
                 throw new IllegalArgumentException("입력 포맷이 맞지 않습니다.");
