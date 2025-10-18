@@ -91,12 +91,12 @@ public class CalculatorService {
         }
 
         // 숫자들 추출
-        extracted(stringParts, number);
+        extractStringsToNumbers(stringParts, number);
         return number;
     }
 
     // 숫자들 추출 공통 로직
-    private static void extracted(String[] stringParts, Number number) {
+    private void extractStringsToNumbers(String[] stringParts, Number number) {
         for (String part : stringParts) {
             number.addNumber(Integer.parseInt(part));
         }
