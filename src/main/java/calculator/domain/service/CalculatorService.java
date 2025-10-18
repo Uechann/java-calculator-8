@@ -50,6 +50,17 @@ public class CalculatorService {
         return calculateSum(number);
     }
 
+    // 커스텀 구분자 추출
+    private Delimeter extractCustomDelimeter(String input) {
+        int newLineIndex = input.indexOf("\\n");
+        String customDelimiter = input.substring(2, newLineIndex);
+
+        // 커스텀 구분자 객체 생성 및 모드 설정
+        Delimeter delimeter = new Delimeter(customDelimiter);
+        delimeter.setDelimeterMode(DelimeterMode.CUSTOM);
+        return delimeter;
+    }
+
     // 커스텀 구분자로 숫자 추출
     public Number extractNumbersWithCustomDelimeter(String input, Number number) {
 
