@@ -24,6 +24,38 @@ class ApplicationTest extends NsTest {
         );
     }
 
+    @Test
+    void 연속된_구분자() {
+        assertSimpleTest(() ->
+                assertThatThrownBy(() -> runException("1,,2"))
+                        .isInstanceOf(IllegalArgumentException.class)
+        );
+    }
+
+    @Test
+    void 구분자로_시작() {
+        assertSimpleTest(() ->
+                assertThatThrownBy(() -> runException(",1,2"))
+                        .isInstanceOf(IllegalArgumentException.class)
+        );
+    }
+
+    @Test
+    void 구분자로_끝() {
+        assertSimpleTest(() ->
+                assertThatThrownBy(() -> runException("1,2,"))
+                        .isInstanceOf(IllegalArgumentException.class)
+        );
+    }
+
+    @Test
+    void 문자_포함() {
+        assertSimpleTest(() ->
+                assertThatThrownBy(() -> runException("1,a,2"))
+                        .isInstanceOf(IllegalArgumentException.class)
+        );
+    }
+
     @Override
     public void runMain() {
         Application.main(new String[]{});
